@@ -161,27 +161,15 @@ trait DAOCoreTrait {
 		if (self::$useTransformers && $memberNames) { // TOTO to remove
 			self::applyTransformers ( $transformers, $row, $memberNames );
 		}
-		if (isset ( $accessors )) {
-			foreach ( $row as $k => $v ) {
-				if ($accesseur = ($accessors [$k] ?? false)) {
-					$o->$accesseur ( $v );
-				}
-				$o->_rest [$memberNames [$k] ?? $k] = $v;
-				if (isset ( $invertedJoinColumns ) && isset ( $invertedJoinColumns [$k] )) {
-					$fk = '_' . $k;
-					$o->$fk = $v;
-					self::prepareManyToOne ( $manyToOneQueries, $o, $v, $fk, $invertedJoinColumns [$k] );
-				}
+		foreach ( $row as $k => $v ) {
+			if ($accesseur = ($accessors [$k] ?? false)) {
+				$o->$accesseur ( $v );
 			}
-		} else {
-			foreach ( $row as $k => $v ) {
-				$o->$k = $v;
-				$o->_rest [$memberNames [$k] ?? $k] = $v;
-				if (isset ( $invertedJoinColumns ) && isset ( $invertedJoinColumns [$k] )) {
-					$fk = '_' . $k;
-					$o->$fk = $v;
-					self::prepareManyToOne ( $manyToOneQueries, $o, $v, $fk, $invertedJoinColumns [$k] );
-				}
+			$o->_rest [$memberNames [$k] ?? $k] = $v;
+			if (isset ( $invertedJoinColumns ) && isset ( $invertedJoinColumns [$k] )) {
+				$fk = '_' . $k;
+				$o->$fk = $v;
+				self::prepareManyToOne ( $manyToOneQueries, $o, $v, $fk, $invertedJoinColumns [$k] );
 			}
 		}
 		self::loadManys ( $o, $db, $oneToManyFields, $oneToManyQueries, $manyToManyFields, $manyToManyParsers );
@@ -205,37 +193,6 @@ trait DAOCoreTrait {
 		foreach ( $row as $k => $v ) {
 			$o->$k = $v;
 			$o->_rest [$memberNames [$k] ?? $k] = $v;
-		}
-		return $o;
-	}
-
-	/**
-	 *
-	 * @param Database $db
-	 * @param array $row
-	 * @param string $className
-	 * @param array $memberNames
-	 * @param array $accessors
-	 * @param array $transformers
-	 * @return object
-	 */
-	public static function _loadSimpleObjectFromRow(Database $db, $row, $className, $memberNames, $accessors, $transformers) {
-		$o = new $className ();
-		if (self::$useTransformers && $memberNames) { // TOTO to remove
-			self::applyTransformers ( $transformers, $row, $memberNames );
-		}
-		if (isset ( $accessors )) {
-			foreach ( $row as $k => $v ) {
-				if ($accesseur = ($accessors [$k] ?? false)) {
-					$o->$accesseur ( $v );
-				}
-				$o->_rest [$memberNames [$k] ?? $k] = $v;
-			}
-		} else {
-			foreach ( $row as $k => $v ) {
-				$o->$k = $v;
-				$o->_rest [$memberNames [$k] ?? $k] = $v;
-			}
 		}
 		return $o;
 	}
