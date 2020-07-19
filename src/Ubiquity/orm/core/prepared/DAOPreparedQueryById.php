@@ -48,12 +48,12 @@ class DAOPreparedQueryById extends DAOPreparedQuery {
 			$query = $this->db->prepareAndExecuteNoCache ( $this->tableName, $this->preparedCondition, $this->fieldList . $this->sqlAdditionalMembers, $cp->getParams () );
 		}
 		if ($query && \sizeof ( $query ) > 0) {
-			$oneToManyQueries = [ ];
-			$manyToOneQueries = [ ];
-			$manyToManyParsers = [ ];
 			$className = $this->className;
 			$row = \current ( $query );
 			if ($this->hasIncluded || ! $this->allPublic) {
+				$oneToManyQueries = [ ];
+				$manyToOneQueries = [ ];
+				$manyToManyParsers = [ ];
 				$object = DAO::_loadObjectFromRow ( $this->db, $row, $className, $this->invertedJoinColumns, $manyToOneQueries, $this->oneToManyFields, $this->manyToManyFields, $oneToManyQueries, $manyToManyParsers, $this->memberList, $this->accessors, $this->transformers );
 				if ($this->hasIncluded) {
 					DAO::_affectsRelationObjects ( $className, $this->firstPropKey, $manyToOneQueries, $oneToManyQueries, $manyToManyParsers, [ $object ], $this->included, $useCache );
