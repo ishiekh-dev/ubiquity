@@ -42,6 +42,7 @@ abstract class DAOPreparedQuery {
 	protected $preparedCondition;
 	protected $additionalMembers = [ ];
 	protected $sqlAdditionalMembers = "";
+	protected $allPublic = false;
 	/**
 	 *
 	 * @var \Ubiquity\db\Database
@@ -194,8 +195,11 @@ abstract class DAOPreparedQuery {
 		$this->fieldList = DAO::_getFieldList ( $this->tableName, $metaDatas );
 		$this->memberList = \array_flip ( \array_diff ( $metaDatas ['#fieldNames'], $metaDatas ['#notSerializable'] ) );
 		$this->propsKeys = OrmUtils::getPropKeys ( $this->className );
-		$this->accessors = $metaDatas ['#accessors'];
+
 		$this->firstPropKey = OrmUtils::getFirstPropKey ( $this->className );
+		if (! ($this->allPublic = OrmUtils::hasAllMembersPublic ( $this->className ))) {
+			$this->accessors = $metaDatas ['#accessors'];
+		}
 	}
 
 	protected function updateSqlAdditionalMembers() {

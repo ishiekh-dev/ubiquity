@@ -191,4 +191,15 @@ class OrmUtils {
 	public static function clearMetaDatas() {
 		self::$modelsMetadatas = [ ];
 	}
+
+	public static function hasAllMembersPublic($className) {
+		$members = self::getMembers ( $className );
+		foreach ( $members as $memberName ) {
+			$field = new \ReflectionProperty ( $className, $memberName );
+			if (! $field->isPublic ()) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

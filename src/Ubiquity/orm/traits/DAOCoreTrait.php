@@ -165,15 +165,27 @@ trait DAOCoreTrait {
 				$row [$field] = $transformer::{$transform} ( $row [$field] );
 			}
 		}
-		foreach ( $row as $k => $v ) {
-			if ($accesseur = ($accessors [$k] ?? false)) {
-				$o->$accesseur ( $v );
+		if (isset ( $accessors )) {
+			foreach ( $row as $k => $v ) {
+				if ($accesseur = ($accessors [$k] ?? false)) {
+					$o->$accesseur ( $v );
+				}
+				$o->_rest [$memberNames [$k] ?? $k] = $v;
+				if (isset ( $invertedJoinColumns ) && isset ( $invertedJoinColumns [$k] )) {
+					$fk = '_' . $k;
+					$o->$fk = $v;
+					self::prepareManyToOne ( $manyToOneQueries, $o, $v, $fk, $invertedJoinColumns [$k] );
+				}
 			}
-			$o->_rest [$memberNames [$k] ?? $k] = $v;
-			if (isset ( $invertedJoinColumns ) && isset ( $invertedJoinColumns [$k] )) {
-				$fk = '_' . $k;
-				$o->$fk = $v;
-				self::prepareManyToOne ( $manyToOneQueries, $o, $v, $fk, $invertedJoinColumns [$k] );
+		} else {
+			foreach ( $row as $k => $v ) {
+				$o->$k = $v;
+				$o->_rest [$memberNames [$k] ?? $k] = $v;
+				if (isset ( $invertedJoinColumns ) && isset ( $invertedJoinColumns [$k] )) {
+					$fk = '_' . $k;
+					$o->$fk = $v;
+					self::prepareManyToOne ( $manyToOneQueries, $o, $v, $fk, $invertedJoinColumns [$k] );
+				}
 			}
 		}
 		if (isset ( $oneToManyFields )) {
@@ -208,10 +220,19 @@ trait DAOCoreTrait {
 				$row [$field] = $transformer::{$transform} ( $row [$field] );
 			}
 		}
-		foreach ( $row as $k => $v ) {
-			$o->$k = $v;
+		if (isset ( $accessors )) {
+			foreach ( $row as $k => $v ) {
+				if ($accesseur = ($accessors [$k] ?? false)) {
+					$o->$accesseur ( $v );
+				}
+				$o->_rest [$memberNames [$k] ?? $k] = $v;
+			}
+		} else {
+			foreach ( $row as $k => $v ) {
+				$o->$k = $v;
+				$o->_rest [$memberNames [$k] ?? $k] = $v;
+			}
 		}
-		$o->_rest = $row;
 		return $o;
 	}
 
