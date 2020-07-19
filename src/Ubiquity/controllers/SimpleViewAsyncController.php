@@ -15,7 +15,7 @@ abstract class SimpleViewAsyncController extends SimpleViewController {
 	protected static $views = [ ];
 
 	protected function _includeFileAsString($filename, $pdata) {
-		$key = \crc32 ( \json_encode ( $pdata ) );
+		$key = \crc32 ( \serialize ( $pdata ) );
 		if (! isset ( self::$views [$filename] [$key] )) {
 			if (isset ( $pdata )) {
 				\extract ( $pdata );
