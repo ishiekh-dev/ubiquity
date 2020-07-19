@@ -209,11 +209,9 @@ trait DAOCoreTrait {
 			}
 		}
 		foreach ( $row as $k => $v ) {
-			if ($accesseur = ($accessors [$k] ?? false)) {
-				$o->$accesseur ( $v );
-			}
-			$o->_rest [$memberNames [$k] ?? $k] = $v;
+			$o->$k = $v;
 		}
+		$o->_rest = $row;
 		return $o;
 	}
 
