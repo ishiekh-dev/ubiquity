@@ -16,7 +16,7 @@ use Ubiquity\db\Database;
  * This class is part of Ubiquity
  *
  * @author jcheron <myaddressmail@gmail.com>
- * @version 1.1.2
+ * @version 1.1.3
  *
  * @property array $db
  * @property boolean $useTransformers
@@ -158,7 +158,7 @@ trait DAOCoreTrait {
 	 */
 	public static function _loadObjectFromRow(Database $db, $row, $className, $invertedJoinColumns, &$manyToOneQueries, $oneToManyFields, $manyToManyFields, &$oneToManyQueries, &$manyToManyParsers, $memberNames, $accessors, $transformers) {
 		$o = new $className ();
-		if ($memberNames && self::$useTransformers) { // TOTO to remove
+		if (self::$useTransformers && $memberNames) { // TOTO to remove
 			foreach ( $transformers as $member => $transformer ) {
 				$field = \array_search ( $member, $memberNames );
 				$transform = self::$transformerOp;
@@ -166,8 +166,7 @@ trait DAOCoreTrait {
 			}
 		}
 		foreach ( $row as $k => $v ) {
-			if (isset ( $accessors [$k] )) {
-				$accesseur = $accessors [$k];
+			if ($accesseur = ($accessors [$k] ?? false)) {
 				$o->$accesseur ( $v );
 			}
 			$o->_rest [$memberNames [$k] ?? $k] = $v;
@@ -202,7 +201,7 @@ trait DAOCoreTrait {
 	 */
 	public static function _loadSimpleObjectFromRow(Database $db, $row, $className, $memberNames, $accessors, $transformers) {
 		$o = new $className ();
-		if ($memberNames && self::$useTransformers) { // TOTO to remove
+		if (self::$useTransformers && $memberNames) { // TOTO to remove
 			foreach ( $transformers as $member => $transformer ) {
 				$field = \array_search ( $member, $memberNames );
 				$transform = self::$transformerOp;
@@ -210,8 +209,7 @@ trait DAOCoreTrait {
 			}
 		}
 		foreach ( $row as $k => $v ) {
-			if (isset ( $accessors [$k] )) {
-				$accesseur = $accessors [$k];
+			if ($accesseur = ($accessors [$k] ?? false)) {
 				$o->$accesseur ( $v );
 			}
 			$o->_rest [$memberNames [$k] ?? $k] = $v;
