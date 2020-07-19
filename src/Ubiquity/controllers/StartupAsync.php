@@ -57,5 +57,11 @@ class StartupAsync extends Startup {
 	public static function getControllerInstance($controllerName): ?object {
 		return self::$controllers [$controllerName] ??= self::_getControllerInstance ( $controllerName );
 	}
+
+	public static function warmupAction($controller, $action = 'index') {
+		ob_start ();
+		static::runAction ( [ $controller,$action ], true, true );
+		ob_end_clean ();
+	}
 }
 
