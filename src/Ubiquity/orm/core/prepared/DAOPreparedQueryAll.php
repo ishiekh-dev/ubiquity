@@ -32,7 +32,7 @@ class DAOPreparedQueryAll extends DAOPreparedQuery {
 		} else {
 			$query = $this->db->prepareAndExecuteNoCache ( $this->tableName, $this->preparedCondition, $this->fieldList . $this->sqlAdditionalMembers, $cp->getParams () );
 		}
-		if ($this->hasIncluded) {
+		if ($this->hasIncluded || ! $this->allPublic) {
 			return $this->_parseQueryResponseWithIncluded ( $query, $className, $useCache );
 		}
 		return $this->_parseQueryResponse ( $query, $className );
@@ -41,7 +41,7 @@ class DAOPreparedQueryAll extends DAOPreparedQuery {
 	protected function _parseQueryResponse($query, $className) {
 		$objects = [ ];
 		foreach ( $query as $row ) {
-			$object = DAO::_loadSimpleObjectFromRow ( $this->db, $row, $className, $this->memberList, $this->accessors, $this->transformers );
+			$object = DAO::_loadSimpleObjectFromRow ( $this->db, $row, $className, $this->memberList, $this->transformers );
 			$key = OrmUtils::getPropKeyValues ( $object, $this->propsKeys );
 			$this->addAditionnalMembers ( $object, $row );
 			$objects [$key] = $object;
