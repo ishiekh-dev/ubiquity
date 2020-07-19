@@ -60,7 +60,8 @@ class StartupAsync extends Startup {
 
 	public static function warmupAction($controller, $action = 'index') {
 		ob_start ();
-		static::runAction ( [ $controller,$action ], true, true );
+		$ru = [ $controller,$action ];
+		static::runAction ( $ru, true, true );
 		ob_end_clean ();
 	}
 }
