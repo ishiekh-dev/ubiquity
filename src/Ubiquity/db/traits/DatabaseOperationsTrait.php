@@ -73,6 +73,11 @@ trait DatabaseOperationsTrait {
 		return $result;
 	}
 
+	public function prepareAndExecuteNoCache($tableName, $condition, $fields, $parameters = null) {
+		$quote = SqlUtils::$quote;
+		return $this->wrapperObject->_optPrepareAndExecute ( "SELECT {$fields} FROM {$quote}{$tableName}{$quote} {$condition}", $parameters );
+	}
+
 	public function storeCache() {
 		$this->cache->storeDeferred ();
 	}

@@ -27,7 +27,11 @@ class DAOPreparedQueryAll extends DAOPreparedQuery {
 		$cp = $this->conditionParser;
 		$cp->setParams ( $params );
 		$className = $this->className;
-		$query = $this->db->prepareAndExecute ( $this->tableName, $this->preparedCondition, $this->fieldList . $this->sqlAdditionalMembers, $cp->getParams (), $useCache );
+		if ($useCache) {
+			$query = $this->db->prepareAndExecute ( $this->tableName, $this->preparedCondition, $this->fieldList . $this->sqlAdditionalMembers, $cp->getParams (), $useCache );
+		} else {
+			$query = $this->db->prepareAndExecuteNoCache ( $this->tableName, $this->preparedCondition, $this->fieldList . $this->sqlAdditionalMembers, $cp->getParams () );
+		}
 		if ($this->hasIncluded) {
 			return $this->_parseQueryResponseWithIncluded ( $query, $className, $useCache );
 		}
